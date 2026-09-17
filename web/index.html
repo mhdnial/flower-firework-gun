@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07060d" />
+    <meta name="description" content="Make a finger gun, click your thumb and shoot flower fireworks. Hand tracking runs on your device." />
+    <title>Flower Firework Gun</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎆</text></svg>" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="i-sfx-on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+      <symbol id="i-sfx-off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></symbol>
+      <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6v12l8.5-6zM16 6h2v12h-2z"/></symbol>
+      <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6v12l-8.5-6zM6 6h2v12H6z"/></symbol>
+      <symbol id="i-music-on" viewBox="0 0 24 24"><path d="M9 17.5V6l10-2v11.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/></symbol>
+      <symbol id="i-music-off" viewBox="0 0 24 24"><path d="M9 17.5V6l10-2v11.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+      <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    </svg>
+
+    <main id="app">
+      <section id="stage" aria-label="Firework stage">
+        <video id="camera" playsinline muted autoplay></video>
+        <canvas id="fx"></canvas>
+        <div id="hud" hidden></div>
+        <div id="toast" role="status" aria-live="polite" hidden></div>
+      </section>
+
+      <header class="topbar">
+        <h1 class="brand">Flower<span> Firework</span></h1>
+        <div class="tools">
+          <button id="btn-sfx" class="icon-btn" type="button" aria-pressed="true" aria-label="Sound effects on">
+            <svg class="icon"><use href="#i-sfx-on" /></svg>
+          </button>
+          <button id="btn-full" class="icon-btn" type="button" aria-label="Fullscreen" hidden>
+            <svg class="icon"><use href="#i-full" /></svg>
+          </button>
+          <button id="btn-help" class="icon-btn" type="button" aria-label="How to play">
+            <svg class="icon"><use href="#i-help" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <footer class="player" aria-label="Music player">
+        <button id="btn-prev" class="icon-btn tablet-up" type="button" aria-label="Previous track" disabled>
+          <svg class="icon"><use href="#i-prev" /></svg>
+        </button>
+        <button id="btn-play" class="icon-btn play" type="button" aria-label="Play music" disabled>
+          <svg class="icon"><use href="#i-play" /></svg>
+        </button>
+        <button id="btn-next" class="icon-btn" type="button" aria-label="Next track" disabled>
+          <svg class="icon"><use href="#i-next" /></svg>
+        </button>
+        <div class="track">
+          <span id="track-title">No music yet</span>
+          <span id="track-artist" class="tablet-up"></span>
+        </div>
+        <input id="volume" class="tablet-up" type="range" min="0" max="1" step="0.01" value="0.7" aria-label="Music volume" />
+        <button id="btn-music-mute" class="icon-btn" type="button" aria-pressed="false" aria-label="Mute music" disabled>
+          <svg class="icon"><use href="#i-music-on" /></svg>
+        </button>
+      </footer>
+
+      <div id="start" class="overlay">
+        <div class="card">
+          <p class="eyebrow">Hand-tracking fireworks</p>
+          <h2>Shoot flowers with your fingers</h2>
+          <ol class="steps">
+            <li><span class="step-emoji" aria-hidden="true">👉</span>Make a finger gun: index out, other fingers curled, thumb up</li>
+            <li><span class="step-emoji" aria-hidden="true">👍</span>Snap your thumb down like a trigger</li>
+            <li><span class="step-emoji" aria-hidden="true">🌷</span>Watch it burst into a tulip, sunflower, rose, lily or ring — both hands work</li>
+          </ol>
+          <button id="btn-start" class="primary" type="button">Start camera</button>
+          <p id="start-status" class="status" role="status" aria-live="polite"></p>
+          <p class="fineprint">Your camera is processed on this device only — nothing is uploaded. The first start downloads the hand-tracking model (about 12&nbsp;MB), then it is cached.</p>
+          <button id="btn-demo" class="link" type="button">No camera? Try demo mode</button>
+        </div>
+      </div>
+
+      <div id="help" class="overlay" hidden>
+        <div class="card">
+          <button id="btn-help-close" class="icon-btn close" type="button" aria-label="Close">
+            <svg class="icon"><use href="#i-close" /></svg>
+          </button>
+          <h2>How to play</h2>
+          <ol class="steps">
+            <li><span class="step-emoji" aria-hidden="true">✋</span>Keep your whole hand in view, in good light</li>
+            <li><span class="step-emoji" aria-hidden="true">👉</span>Hold a finger gun until the dot on your fingertip glows</li>
+            <li><span class="step-emoji" aria-hidden="true">👍</span>Lift your thumb, then snap it down to fire</li>
+          </ol>
+          <label class="toggle"><input id="chk-hud" type="checkbox" /> Show tracking debug info</label>
+          <p class="fineprint">Tip: press <kbd>Space</kbd> or double-tap the screen to fire a test shot.</p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

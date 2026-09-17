@@ -1,0 +1,19 @@
+# TouchDesigner project files (180 MB, over GitHub's 100 MB limit) and autosave backups
+*.toe
+Backup/
+
+# third-party MediaPipe TouchDesigner plugin — download from its GitHub releases
+Mediapipe/
+
+# local helper that lets tools control a running TouchDesigner session
+claude_bridge.py
+
+# local editor / tool settings
+.claude/
+
+# music files are not published in the repo (copyrighted tracks) — add them locally
+web/public/music/*.mp3
+web/public/music/*.m4a
+web/public/music/*.ogg
+web/public/music/*.opus
+web/public/music/*.wav
