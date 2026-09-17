@@ -1,7 +1,6 @@
 {
   "tracks": [
-    { "title": "About You", "artist": "The 1975", "src": "/music/About%20You%20-%20The%201975.mp3" },
-    { "title": "Multo", "artist": "Cup Of Joe", "src": "/music/Multo%20-%20Cup%20Of%20Joe.mp3" },
-    { "title": "Pasilyo", "artist": "SunKissed Lola", "src": "/music/Pasilyo%20-%20SunKissed%20Lola.mp3" }
+    { "title": "Multo", "artist": "Cup Of Joe", "src": "/music/mult0.mp3" },
+    { "title": "Pasilyo", "artist": "SunKissed Lola", "src": "/music/pasily0.mp3" }
   ]
 }
