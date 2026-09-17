@@ -81,6 +81,11 @@ export class Fireworks {
 
   get unit() { return Math.min(this.width, this.height) / 2 }
 
+  /** Remove every particle (e.g. when leaving the stage). */
+  clear() {
+    this.count = 0
+  }
+
   resize(w: number, h: number) {
     this.width = w
     this.height = h

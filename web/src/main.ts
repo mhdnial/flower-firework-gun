@@ -150,7 +150,7 @@ startBtn.addEventListener('click', async () => {
     })
     await tracker.start()
     video.classList.add('live')
-    startOverlay.hidden = true
+    enterStage()
     toast('Make a finger gun 👉 then snap your thumb down')
   } catch (e) {
     const code = (e as { code?: string }).code ?? 'unknown'
@@ -163,7 +163,7 @@ startBtn.addEventListener('click', async () => {
 let demoTimer = 0
 $('btn-demo').addEventListener('click', () => {
   sfx.unlock()
-  startOverlay.hidden = true
+  enterStage()
   toast('Demo mode — press Space or double-tap to shoot')
   const auto = () => {
     if (!document.hidden) testShot()
@@ -172,6 +172,36 @@ $('btn-demo').addEventListener('click', () => {
   clearTimeout(demoTimer)
   demoTimer = window.setTimeout(auto, 600)
 })
+
+// ---------------------------------------------------------------- exit to home
+const exitBtn = $<HTMLButtonElement>('btn-exit')
+
+function enterStage() {
+  startOverlay.hidden = true
+  exitBtn.hidden = false
+}
+
+/** Back to the start screen, as when the page first opened. Music keeps playing. */
+function exitToHome() {
+  clearTimeout(demoTimer)
+  tracker?.stop()
+  video.srcObject = null
+  video.classList.remove('live')
+  views = []
+  viewsAt = 0
+  fireworks.clear()
+  hud.hidden = true
+  $('toast').hidden = true
+  help.hidden = true
+  if (document.fullscreenElement) void document.exitFullscreen()
+  exitBtn.hidden = true
+  startBtn.disabled = false
+  startBtn.textContent = 'Start camera'
+  startStatus.textContent = ''
+  startOverlay.hidden = false
+  startBtn.focus()
+}
+exitBtn.addEventListener('click', exitToHome)
 
 function testShot(x?: number, y?: number) {
   const w = stage.clientWidth, h = stage.clientHeight

@@ -134,6 +134,7 @@ button { font: inherit; color: inherit; }
 }
 .brand span { display: none; }
 .tools { display: flex; gap: 8px; }
+.lead { display: flex; align-items: center; gap: 10px; min-width: 0; }
 
 /* ---------- music player ---------- */
 .player {
