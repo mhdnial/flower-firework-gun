@@ -88,6 +88,8 @@ export class MusicPlayer {
     else this.audio.pause()
   }
 
+  pause() { this.audio.pause() }
+
   next() { this.select(this.index + 1, !this.audio.paused || this.audio.ended) }
   prev() { this.select(this.index - 1, !this.audio.paused) }
 

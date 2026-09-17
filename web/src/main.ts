@@ -181,9 +181,10 @@ function enterStage() {
   exitBtn.hidden = false
 }
 
-/** Back to the start screen, as when the page first opened. Music keeps playing. */
+/** Back to the start screen, as when the page first opened. */
 function exitToHome() {
   clearTimeout(demoTimer)
+  music.pause()
   tracker?.stop()
   video.srcObject = null
   video.classList.remove('live')
